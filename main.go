@@ -4,10 +4,18 @@ import (
 	"fmt"
 )
 
+type Maze struct {
+	Maze [][]string
+	X    int
+	Y    int
+	WinX int
+	WinY int
+}
+
 func main() {
 	var input string
 
-	maze := [][]string{
+	initMaze := [][]string{
 		{"#", "#", "#", "#", "#", "#", "#", "#", " ", "#"},
 		{"#", " ", " ", " ", " ", " ", " ", "#", " ", "#"},
 		{"#", " ", "#", "#", "#", " ", "#", " ", " ", "#"},
@@ -25,16 +33,21 @@ func main() {
 		{"#", " ", " ", " ", "#", "#", " ", "#", " ", "#"},
 		{"#", "#", "#", "#", "#", "#", "#", "#", "@", "#"},
 	}
-	xAxis := 8
-	yAxis := 15
-	winPosX := 8
-	winPosY := 0
+
+	maze := Maze{
+		Maze: initMaze,
+		X:    8,
+		Y:    15,
+		WinX: 8,
+		WinY: 0,
+	}
+
 inputLoop:
 	for {
 		ClearTerminal()
 		showHeader()
 
-		if xAxis == winPosX && yAxis == winPosY {
+		if maze.X == maze.WinX && maze.Y == maze.WinY {
 			fmt.Println()
 			fmt.Println()
 			fmt.Println()
@@ -42,7 +55,7 @@ inputLoop:
 			break
 		}
 
-		for _, v := range maze {
+		for _, v := range maze.Maze {
 			for _, s := range v {
 				fmt.Print(s)
 			}
@@ -57,34 +70,16 @@ inputLoop:
 			break inputLoop
 		case "w", "W":
 			fmt.Println("w key pressed")
-			
+			maze.moveUp()
 		case "a", "A":
 			fmt.Println("a key pressed")
-			if maze[yAxis][xAxis-1] == " " {
-				maze[yAxis][xAxis-1] = "@"
-				maze[yAxis][xAxis] = " "
-				xAxis--
-			} else {
-				fmt.Println("cannot move")
-			}
+			maze.moveLeft()
 		case "s", "S":
 			fmt.Println("s key pressed")
-			if maze[yAxis+1][xAxis] == " " {
-				maze[yAxis+1][xAxis] = "@"
-				maze[yAxis][xAxis] = " "
-				yAxis++
-			} else {
-				fmt.Println("cannot move")
-			}
+			maze.moveDown()
 		case "d", "D":
 			fmt.Println("d key pressed")
-			if maze[yAxis][xAxis+1] == " " {
-				maze[yAxis][xAxis+1] = "@"
-				maze[yAxis][xAxis] = " "
-				xAxis++
-			} else {
-				fmt.Println("cannot move")
-			}
+			maze.moveRight()
 		default:
 			fmt.Println("invalid Key Pressed")
 		}
@@ -100,22 +95,42 @@ func showHeader() {
 	fmt.Println("               Type Q and press ENTER to exit")
 }
 
-/* 
- * will be modified later
- */
-
-func moveUp(maze *[][]string) {
-	
+func (m *Maze) moveUp() {
+	if m.Maze[m.Y-1][m.X] == " " {
+		m.Maze[m.Y-1][m.X] = "@"
+		m.Maze[m.Y][m.X] = " "
+		m.Y--
+	} else {
+		fmt.Println("cannot move")
+	}
 }
 
-func moveDown(maze *[][]string)  {
-	
+func (m *Maze) moveDown() {
+	if m.Maze[m.Y+1][m.X] == " " {
+		m.Maze[m.Y+1][m.X] = "@"
+		m.Maze[m.Y][m.X] = " "
+		m.Y++
+	} else {
+		fmt.Println("cannot move")
+	}
 }
 
-func moveLeft(maze *[][]string)  {
-	
+func (m *Maze) moveLeft() {
+	if m.Maze[m.Y][m.X-1] == " " {
+		m.Maze[m.Y][m.X-1] = "@"
+		m.Maze[m.Y][m.X] = " "
+		m.X--
+	} else {
+		fmt.Println("cannot move")
+	}
 }
 
-func moveRight(maze *[][]string)  {
-	
+func (m *Maze) moveRight() {
+	if m.Maze[m.Y][m.X+1] == " " {
+		m.Maze[m.Y][m.X+1] = "@"
+		m.Maze[m.Y][m.X] = " "
+		m.X++
+	} else {
+		fmt.Println("cannot move")
+	}
 }
