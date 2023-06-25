@@ -1,4 +1,4 @@
-package main
+package oscommand
 
 import (
 	"os"

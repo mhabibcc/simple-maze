@@ -2,15 +2,11 @@ package main
 
 import (
 	"fmt"
-)
+	"os"
 
-type Maze struct {
-	Maze [][]string
-	X    int
-	Y    int
-	WinX int
-	WinY int
-}
+	"github.com/joking/simple-maze/internal/usecase/maze"
+	oscommand "github.com/joking/simple-maze/pkg/os-command"
+)
 
 func main() {
 	var input string
@@ -34,20 +30,17 @@ func main() {
 		{"#", "#", "#", "#", "#", "#", "#", "#", "@", "#"},
 	}
 
-	maze := Maze{
-		Maze: initMaze,
-		X:    8,
-		Y:    15,
-		WinX: 8,
-		WinY: 0,
-	}
+	maze := maze.NewMaze(initMaze, 8, 15, 8, 0)
+
+	fmt.Println(*maze)
+	os.Exit(0)
 
 inputLoop:
 	for {
-		ClearTerminal()
+		oscommand.ClearTerminal()
 		showHeader()
 
-		if maze.X == maze.WinX && maze.Y == maze.WinY {
+		if maze.IsWin() {
 			fmt.Println()
 			fmt.Println()
 			fmt.Println()
@@ -69,17 +62,13 @@ inputLoop:
 			fmt.Println("               Exit Program. Thank You")
 			break inputLoop
 		case "w", "W":
-			fmt.Println("w key pressed")
-			maze.moveUp()
+			maze.MoveUp()
 		case "a", "A":
-			fmt.Println("a key pressed")
-			maze.moveLeft()
+			maze.MoveLeft()
 		case "s", "S":
-			fmt.Println("s key pressed")
-			maze.moveDown()
+			maze.MoveDown()
 		case "d", "D":
-			fmt.Println("d key pressed")
-			maze.moveRight()
+			maze.MoveRight()
 		default:
 			fmt.Println("invalid Key Pressed")
 		}
@@ -93,44 +82,4 @@ func showHeader() {
 	fmt.Println()
 	fmt.Println("               Type W/A/S/D and then press ENTER to move the `@`.")
 	fmt.Println("               Type Q and press ENTER to exit")
-}
-
-func (m *Maze) moveUp() {
-	if m.Maze[m.Y-1][m.X] == " " {
-		m.Maze[m.Y-1][m.X] = "@"
-		m.Maze[m.Y][m.X] = " "
-		m.Y--
-	} else {
-		fmt.Println("cannot move")
-	}
-}
-
-func (m *Maze) moveDown() {
-	if m.Maze[m.Y+1][m.X] == " " {
-		m.Maze[m.Y+1][m.X] = "@"
-		m.Maze[m.Y][m.X] = " "
-		m.Y++
-	} else {
-		fmt.Println("cannot move")
-	}
-}
-
-func (m *Maze) moveLeft() {
-	if m.Maze[m.Y][m.X-1] == " " {
-		m.Maze[m.Y][m.X-1] = "@"
-		m.Maze[m.Y][m.X] = " "
-		m.X--
-	} else {
-		fmt.Println("cannot move")
-	}
-}
-
-func (m *Maze) moveRight() {
-	if m.Maze[m.Y][m.X+1] == " " {
-		m.Maze[m.Y][m.X+1] = "@"
-		m.Maze[m.Y][m.X] = " "
-		m.X++
-	} else {
-		fmt.Println("cannot move")
-	}
 }
